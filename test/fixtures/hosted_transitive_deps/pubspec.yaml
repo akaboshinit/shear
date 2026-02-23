@@ -1,0 +1,17 @@
+name: hosted_transitive_deps
+version: 0.1.0
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  # Directly used in code
+  dio: ^5.0.0
+  # Transitively required by core_lib (core_lib -> helper_pkg)
+  helper_pkg: ^1.0.0
+  # Transitively required by core_lib (core_lib -> util_pkg)
+  util_pkg: ^2.0.0
+  # Transitively required by helper_pkg (helper_pkg -> deep_dep)
+  deep_dep: ^1.0.0
+  # Truly unused
+  unused_pkg: ^1.0.0

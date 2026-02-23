@@ -1,0 +1,6 @@
+## Unused files
+  error: lib/src/isolated.dart
+
+## Unused exports
+  warn: isolatedFunction (lib/src/isolated.dart)
+

@@ -1,0 +1,23 @@
+include: package:lints/recommended.yaml
+
+analyzer:
+  exclude:
+    - test/fixtures/**
+
+linter:
+  rules:
+    - always_declare_return_types
+    - annotate_overrides
+    - avoid_empty_else
+    - avoid_print
+    - cancel_subscriptions
+    - close_sinks
+    - prefer_const_constructors
+    - prefer_const_declarations
+    - prefer_final_fields
+    - prefer_final_locals
+    - prefer_single_quotes
+    - sort_constructors_first
+    - sort_unnamed_constructors_first
+    - unawaited_futures
+    - unnecessary_lambdas

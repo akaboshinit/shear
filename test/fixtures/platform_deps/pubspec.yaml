@@ -1,0 +1,13 @@
+name: platform_deps
+version: 0.1.0
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  path: ^1.9.0
+  google_sign_in: ^6.3.0
+  google_sign_in_ios: ^5.8.1
+  shared_preferences: ^2.5.0
+  shared_preferences_android: ^2.4.0
+  unused_package: ^1.0.0

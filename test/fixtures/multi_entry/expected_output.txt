@@ -1,0 +1,6 @@
+## Unused files
+  error: lib/src/unreachable.dart
+
+## Unused exports
+  warn: unreachableValue (lib/src/unreachable.dart)
+

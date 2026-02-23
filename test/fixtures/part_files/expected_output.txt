@@ -1,0 +1,7 @@
+## Unused files
+  error: lib/src/unused_lib_with_part.dart
+
+## Unused exports
+  warn: unusedLibFunction (lib/src/unused_lib_with_part.dart)
+  warn: unusedPartFunction (lib/src/unused_lib_with_part.dart)
+

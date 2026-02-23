@@ -1,0 +1,15 @@
+name: transitive_deps
+version: 0.1.0
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  path: ^1.9.0
+  local_pkg:
+    path: local_pkg
+  # Pinned transitive deps from local_pkg
+  collection: ^1.18.0
+  fixnum: ^1.1.0
+  # Truly unused
+  http: ^1.2.0

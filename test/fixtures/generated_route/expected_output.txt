@@ -1,0 +1,9 @@
+## Unused files
+  error: lib/src/unused_widget.dart
+
+## Unused dependencies
+  error: path (pubspec.yaml)
+
+## Unused exports
+  warn: UnusedWidget (lib/src/unused_widget.dart)
+

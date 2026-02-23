@@ -1,0 +1,11 @@
+paths:
+  - test/analyzer/
+  - test/cli/
+  - test/config/
+  - test/core/
+  - test/deletion/
+  - test/detection/
+  - test/golden/
+  - test/graph/
+  - test/helpers/
+  - test/reporter/

@@ -1,0 +1,8 @@
+entry:
+  - "bin/*.dart"
+
+ignore:
+  - "lib/src/generated/**"
+
+ignoreDependencies:
+  - http

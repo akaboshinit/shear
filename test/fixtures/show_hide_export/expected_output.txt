@@ -1,0 +1,4 @@
+## Unused exports
+  warn: HiddenClass (lib/src/hidden.dart)
+  warn: FilteredOutClass (lib/src/symbols.dart)
+

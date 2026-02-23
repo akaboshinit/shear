@@ -1,0 +1,3 @@
+class VisibleClass {}
+
+class HiddenClass {}

@@ -1,0 +1,10 @@
+## Unused files
+  error: lib/src/unused_helper.dart
+
+## Unused dependencies
+  error: http (pubspec.yaml)
+
+## Unused exports
+  warn: UnusedClass (lib/src/unused_helper.dart)
+  warn: unusedFunction (lib/src/unused_helper.dart)
+

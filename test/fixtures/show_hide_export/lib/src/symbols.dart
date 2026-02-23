@@ -1,0 +1,3 @@
+class ExposedClass {}
+
+class FilteredOutClass {}
