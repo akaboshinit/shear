@@ -1,0 +1,6 @@
+name: unused_enum_members
+version: 0.0.1
+environment:
+  sdk: ^3.0.0
+dependencies:
+  path: ^1.8.0

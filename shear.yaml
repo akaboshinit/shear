@@ -1,0 +1,54 @@
+# Shear configuration
+# https://github.com/akaboshinit/shear
+
+# Entry point files — analysis starts from these files
+entry:
+  - lib/app.dart
+  - lib/main.dart
+  - "test/**_test.dart"
+  - "integration_test/**_test.dart"
+  - "**/*.gr.dart"
+  - "**/*.story.dart"
+  - "**/*.fake.dart"
+
+# Project scope — only these files are analyzed
+project:
+  - "lib/**.dart"
+  - "test/**.dart"
+  - "integration_test/**.dart"
+
+# Files to ignore
+ignore:
+  - "**/*.g.dart"
+  - "**/*.freezed.dart"
+  - "**/*.mocks.dart"
+  - "**/*.config.dart"
+  - "**/*.chopper.dart"
+  - "**/*.fake.dart"
+  - lib/generated_playbook.dart
+  - lib/generated_fake_overrides.dart
+  - test/flutter_test_config.dart
+  - lib/state/fake_state_notifier.dart
+
+# Dependencies to treat as implicitly used
+ignoreDependencies:
+  - flutter
+  - flutter_localizations
+  - flutter_web_plugins
+  - flutter_test
+  - integration_test
+
+# Severity rules: error | warn | off
+rules:
+  unusedFiles: error
+  unusedDependencies: error
+  unusedExports: error
+
+# Whether to check exports from entry point files
+includeEntryExports: false
+
+# Plugin configuration (auto-detected)
+plugins:
+  flutter: true
+  build_runner: true
+

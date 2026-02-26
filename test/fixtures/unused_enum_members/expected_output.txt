@@ -1,0 +1,7 @@
+## Unused dependencies
+  error: path (pubspec.yaml)
+
+## Unused enum members
+  warn: Status.deleted (lib/src/status.dart)
+  warn: Status.inactive (lib/src/status.dart)
+

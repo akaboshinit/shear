@@ -7,7 +7,10 @@ import '../analyzer/file_parser.dart';
 import '../analyzer/uri_resolver.dart';
 import '../config/config_loader.dart';
 import '../config/shear_config.dart';
+import '../detection/unlisted_dep_detector.dart';
+import '../detection/unused_class_member_detector.dart';
 import '../detection/unused_dep_detector.dart';
+import '../detection/unused_enum_member_detector.dart';
 import '../detection/unused_export_detector.dart';
 import '../detection/unused_file_detector.dart';
 import '../graph/graph_builder.dart';
@@ -67,10 +70,13 @@ class ShearAnalyzer {
     final detectors = [
       UnusedFileDetector(),
       UnusedDepDetector(projectRoot: absoluteRoot),
+      UnlistedDepDetector(projectRoot: absoluteRoot),
       UnusedExportDetector(
         uriResolver: uriResolver,
         includeEntryExports: effectiveConfig.includeEntryExports,
       ),
+      UnusedEnumMemberDetector(uriResolver: uriResolver),
+      const UnusedClassMemberDetector(),
     ];
 
     final issues = <Issue>[

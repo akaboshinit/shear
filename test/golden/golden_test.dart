@@ -15,5 +15,8 @@ void main() {
     test('ignore_patterns', () => runGoldenTest('ignore_patterns'));
     test('generated_route', () => runGoldenTest('generated_route'));
     test('bare_import', () => runGoldenTest('bare_import'));
+    test('unused_enum_members',
+        () => runGoldenTest('unused_enum_members'));
+    test('unlisted_deps', () => runGoldenTest('unlisted_deps'));
   });
 }

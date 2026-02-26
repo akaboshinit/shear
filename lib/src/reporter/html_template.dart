@@ -23,7 +23,10 @@ abstract final class HtmlTemplate {
       --color-success-bg: #ecfdf5;
       --color-unused-file: #6366f1;
       --color-unused-dep: #ec4899;
+      --color-unlisted-dep: #8b5cf6;
       --color-unused-export: #f97316;
+      --color-unused-enum: #14b8a6;
+      --color-unused-class: #64748b;
     }
 
     @media (prefers-color-scheme: dark) {
@@ -41,7 +44,10 @@ abstract final class HtmlTemplate {
         --color-success-bg: #1a3a2a;
         --color-unused-file: #818cf8;
         --color-unused-dep: #f472b6;
+        --color-unlisted-dep: #a78bfa;
         --color-unused-export: #fb923c;
+        --color-unused-enum: #2dd4bf;
+        --color-unused-class: #94a3b8;
       }
     }
 

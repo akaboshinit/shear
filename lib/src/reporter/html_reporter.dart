@@ -151,7 +151,10 @@ $segments  <text x="100" y="96" text-anchor="middle" font-size="28" font-weight=
     const configs = [
       (IssueType.unusedFile, 'unused-file', 'Files', _fileIcon),
       (IssueType.unusedDependency, 'unused-dep', 'Dependencies', _packageIcon),
+      (IssueType.unlistedDependency, 'unlisted-dep', 'Unlisted Deps', _packageIcon),
       (IssueType.unusedExport, 'unused-export', 'Exports', _codeIcon),
+      (IssueType.unusedEnumMember, 'unused-enum', 'Enum Members', _codeIcon),
+      (IssueType.unusedClassMember, 'unused-class', 'Class Members', _codeIcon),
     ];
 
     final buf = StringBuffer();
@@ -196,7 +199,10 @@ $segments  <text x="100" y="96" text-anchor="middle" font-size="28" font-weight=
       <div class="separator"></div>
       <label><input type="checkbox" class="type-filter" value="unusedFile" checked> Files</label>
       <label><input type="checkbox" class="type-filter" value="unusedDependency" checked> Deps</label>
+      <label><input type="checkbox" class="type-filter" value="unlistedDependency" checked> Unlisted</label>
       <label><input type="checkbox" class="type-filter" value="unusedExport" checked> Exports</label>
+      <label><input type="checkbox" class="type-filter" value="unusedEnumMember" checked> Enums</label>
+      <label><input type="checkbox" class="type-filter" value="unusedClassMember" checked> Classes</label>
     </div>
   </div>''');
 
@@ -262,7 +268,10 @@ $segments  <text x="100" y="96" text-anchor="middle" font-size="28" font-weight=
     return switch (type) {
       IssueType.unusedFile => 'var(--color-unused-file)',
       IssueType.unusedDependency => 'var(--color-unused-dep)',
+      IssueType.unlistedDependency => 'var(--color-unlisted-dep)',
       IssueType.unusedExport => 'var(--color-unused-export)',
+      IssueType.unusedEnumMember => 'var(--color-unused-enum)',
+      IssueType.unusedClassMember => 'var(--color-unused-class)',
     };
   }
 

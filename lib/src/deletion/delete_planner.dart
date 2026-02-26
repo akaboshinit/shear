@@ -111,7 +111,10 @@ class DeletePlanner {
     return switch (type) {
       IssueType.unusedFile => 'files',
       IssueType.unusedDependency => 'dependencies',
+      IssueType.unlistedDependency => 'dependencies',
       IssueType.unusedExport => 'exports',
+      IssueType.unusedEnumMember => 'enumMembers',
+      IssueType.unusedClassMember => 'classMembers',
     };
   }
 }

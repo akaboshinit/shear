@@ -14,17 +14,48 @@ class DeclarationExtractor extends SimpleAstVisitor<void> {
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    _addIfPublic(node.name.lexeme, SymbolKind.classDecl);
+    final name = node.name.lexeme;
+    if (name.startsWith('_')) return;
+
+    final members = _extractClassMembers(node.members);
+    symbols.add(PublicSymbol(
+      name: name,
+      kind: SymbolKind.classDecl,
+      filePath: filePath,
+      memberNames: members,
+    ));
   }
 
   @override
   void visitMixinDeclaration(MixinDeclaration node) {
-    _addIfPublic(node.name.lexeme, SymbolKind.mixin);
+    final name = node.name.lexeme;
+    if (name.startsWith('_')) return;
+
+    final members = _extractClassMembers(node.members);
+    symbols.add(PublicSymbol(
+      name: name,
+      kind: SymbolKind.mixin,
+      filePath: filePath,
+      memberNames: members,
+    ));
   }
 
   @override
   void visitEnumDeclaration(EnumDeclaration node) {
-    _addIfPublic(node.name.lexeme, SymbolKind.enumDecl);
+    final name = node.name.lexeme;
+    if (name.startsWith('_')) return;
+
+    final members = node.constants
+        .map((c) => c.name.lexeme)
+        .where((n) => !n.startsWith('_'))
+        .toList();
+
+    symbols.add(PublicSymbol(
+      name: name,
+      kind: SymbolKind.enumDecl,
+      filePath: filePath,
+      memberNames: members,
+    ));
   }
 
   @override
@@ -66,5 +97,32 @@ class DeclarationExtractor extends SimpleAstVisitor<void> {
     if (!name.startsWith('_')) {
       symbols.add(PublicSymbol(name: name, kind: kind, filePath: filePath));
     }
+  }
+
+  List<String> _extractClassMembers(NodeList<ClassMember> members) {
+    final result = <String>[];
+    for (final member in members) {
+      if (member is MethodDeclaration) {
+        if (_hasOverrideAnnotation(member)) continue;
+        if (member.name.lexeme.startsWith('_')) continue;
+        if (member.isOperator) continue;
+        result.add(member.name.lexeme);
+      } else if (member is FieldDeclaration) {
+        if (!member.isStatic) continue;
+        for (final v in member.fields.variables) {
+          if (!v.name.lexeme.startsWith('_')) result.add(v.name.lexeme);
+        }
+      } else if (member is ConstructorDeclaration) {
+        final ctorName = member.name?.lexeme;
+        if (ctorName != null && !ctorName.startsWith('_')) {
+          result.add(ctorName);
+        }
+      }
+    }
+    return result;
+  }
+
+  bool _hasOverrideAnnotation(AnnotatedNode node) {
+    return node.metadata.any((a) => a.name.name == 'override');
   }
 }

@@ -17,8 +17,14 @@ class AnalyzeCommand extends Command<int> {
       ..addMultiOption(
         'include',
         help: 'Issue types to include.',
-        allowed: ['files', 'dependencies', 'exports'],
-        defaultsTo: ['files', 'dependencies', 'exports'],
+        allowed: [
+          'files',
+          'dependencies',
+          'exports',
+          'enumMembers',
+          'classMembers',
+        ],
+        defaultsTo: ['files', 'dependencies', 'exports', 'enumMembers', 'classMembers'],
       )
       ..addOption(
         'reporter',
@@ -102,7 +108,10 @@ class AnalyzeCommand extends Command<int> {
     return switch (type) {
       IssueType.unusedFile => 'files',
       IssueType.unusedDependency => 'dependencies',
+      IssueType.unlistedDependency => 'dependencies',
       IssueType.unusedExport => 'exports',
+      IssueType.unusedEnumMember => 'enumMembers',
+      IssueType.unusedClassMember => 'classMembers',
     };
   }
 

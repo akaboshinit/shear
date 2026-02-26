@@ -3,3 +3,7 @@
   warn: kDefaultTimeout (lib/src/utils.dart)
   warn: unusedFunction (lib/src/utils.dart)
 
+## Unused enum members
+  warn: UserRole.editor (lib/src/models.dart)
+  warn: UserRole.viewer (lib/src/models.dart)
+

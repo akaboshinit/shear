@@ -8,3 +8,6 @@
   warn: UnusedClass (lib/src/unused_helper.dart)
   warn: unusedFunction (lib/src/unused_helper.dart)
 
+## Unused class members
+  warn: UnusedClass.doNothing (lib/src/unused_helper.dart)
+

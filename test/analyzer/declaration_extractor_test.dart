@@ -87,6 +87,79 @@ void main() {
       expect(symbols, isEmpty);
     });
 
+    test('extracts enum member names', () {
+      final symbols =
+          extractDecls('enum Status { active, inactive, deleted }');
+      expect(symbols, hasLength(1));
+      expect(symbols.first.memberNames, ['active', 'inactive', 'deleted']);
+    });
+
+    test('extracts enhanced enum constants only', () {
+      final symbols = extractDecls('''
+enum Color {
+  red('Red'),
+  green('Green'),
+  blue('Blue');
+
+  const Color(this.label);
+  final String label;
+
+  String get upperLabel => label.toUpperCase();
+}
+''');
+      expect(symbols, hasLength(1));
+      expect(symbols.first.memberNames, ['red', 'green', 'blue']);
+    });
+
+    test('extracts class member names', () {
+      final symbols = extractDecls('''
+class MyService {
+  static const instance = 'singleton';
+  static String create() => '';
+  void doWork() {}
+  void _privateMethod() {}
+  MyService.named();
+  MyService._internal();
+}
+''');
+      expect(symbols, hasLength(1));
+      expect(
+        symbols.first.memberNames,
+        containsAll(['instance', 'create', 'doWork', 'named']),
+      );
+      expect(symbols.first.memberNames, isNot(contains('_privateMethod')));
+      expect(symbols.first.memberNames, isNot(contains('_internal')));
+    });
+
+    test('excludes override methods from class members', () {
+      final symbols = extractDecls('''
+class MyWidget {
+  void doSomething() {}
+
+  @override
+  String toString() => 'MyWidget';
+
+  @override
+  bool operator ==(Object other) => false;
+}
+''');
+      expect(symbols, hasLength(1));
+      expect(symbols.first.memberNames, ['doSomething']);
+    });
+
+    test('extracts mixin member names', () {
+      final symbols = extractDecls('''
+mixin Loggable {
+  void log(String msg) {}
+  void _internalLog() {}
+  static const tag = 'LOG';
+}
+''');
+      expect(symbols, hasLength(1));
+      expect(symbols.first.memberNames, containsAll(['log', 'tag']));
+      expect(symbols.first.memberNames, isNot(contains('_internalLog')));
+    });
+
     test('extracts mixed declarations', () {
       final symbols = extractDecls('''
 class Foo {}

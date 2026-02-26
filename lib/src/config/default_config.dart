@@ -93,6 +93,9 @@ class DefaultConfig {
   static const Map<IssueType, Severity> _defaultRules = {
     IssueType.unusedFile: Severity.error,
     IssueType.unusedDependency: Severity.error,
+    IssueType.unlistedDependency: Severity.error,
     IssueType.unusedExport: Severity.warn,
+    IssueType.unusedEnumMember: Severity.warn,
+    IssueType.unusedClassMember: Severity.warn,
   };
 }

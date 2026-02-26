@@ -1,6 +1,6 @@
 # Shear
 
-> Find unused files, dependencies, and exports in your Dart & Flutter projects.
+> Find unused files, dependencies, exports, and members in your Dart & Flutter projects.
 
 [English](README.md) | [日本語](README.ja.md)
 
@@ -10,7 +10,10 @@
 
 - **Unused file detection** — Finds Dart files unreachable from any entry point using graph-based reachability analysis
 - **Unused dependency detection** — Identifies packages declared in `pubspec.yaml` but never imported, with transitive dependency awareness
+- **Unlisted dependency detection** — Finds packages imported in code but not declared in `pubspec.yaml`
 - **Unused export detection** — Spots exported symbols (classes, functions, etc.) that no other file imports, with conditional import support
+- **Unused enum member detection** — Detects enum constants that are never referenced in the project
+- **Unused class member detection** — Detects public class/mixin members that are never referenced (name-based heuristic)
 - **Auto-delete** — Remove detected unused files, dependencies, and exports with `shear delete`
 - **Zero-config** — Smart defaults for both pure Dart and Flutter projects
 - **Plugin system** — Auto-detects Flutter and `build_runner` for framework-aware analysis
@@ -123,7 +126,7 @@ shear delete [options]
 
 | Option | Description | Default |
 |---|---|---|
-| `--include <type>` | Categories to delete: `files`, `dependencies`, `exports` | all |
+| `--include <type>` | Categories to delete: `files`, `dependencies`, `exports`, `enumMembers`, `classMembers` | all |
 | `--dry-run` | Preview changes without modifying files | `false` |
 | `--force` | Skip confirmation prompt | `false` |
 | `--verbose` | Show detailed output | `false` |
@@ -186,7 +189,7 @@ Deletion complete:
 
 | Option | Description | Default |
 |---|---|---|
-| `--include <type>` | Issue types to check: `files`, `dependencies`, `exports` | all |
+| `--include <type>` | Issue types to check: `files`, `dependencies`, `exports`, `enumMembers`, `classMembers` | all |
 | `-r, --reporter <format>` | Output format: `console`, `json`, `html` | `console` |
 | `-o, --output <path>` | Write report to a file instead of stdout | — |
 | `--strict` | Treat warnings as errors (non-zero exit code) | `false` |
@@ -234,7 +237,11 @@ Unused exports (3)
   legacyParser   lib/src/parser.dart
   DEPRECATED_KEY lib/src/constants.dart
 
-Summary: 6 issues (3 errors, 3 warnings)
+Unused enum members (2)
+  UserRole.editor  lib/src/models.dart
+  UserRole.viewer  lib/src/models.dart
+
+Summary: 8 issues (3 errors, 5 warnings)
 ```
 
 ### JSON Output
@@ -261,7 +268,10 @@ $ shear analyze --reporter json
     "byType": {
       "unusedFile": 1,
       "unusedDependency": 0,
-      "unusedExport": 0
+      "unlistedDependency": 0,
+      "unusedExport": 0,
+      "unusedEnumMember": 0,
+      "unusedClassMember": 0
     }
   }
 }
@@ -277,7 +287,7 @@ Generates a self-contained HTML file with:
 
 - **Health Score** — Donut chart (0–100) based on error/warning counts
 - **Summary Cards** — Total issues, errors, and warnings at a glance
-- **Category Cards** — Breakdown by type (files, dependencies, exports)
+- **Category Cards** — Breakdown by type (files, dependencies, unlisted deps, exports, enum members, class members)
 - **SVG Charts** — Type distribution donut chart and severity bar chart
 - **Interactive Filters** — Search by file path/symbol, filter by severity and type
 - **Dark Mode** — Automatic via `prefers-color-scheme`
@@ -316,7 +326,10 @@ ignoreDependencies:
 rules:
   unusedFiles: error
   unusedDependencies: error
+  unlistedDependencies: error
   unusedExports: warn
+  unusedEnumMembers: warn
+  unusedClassMembers: warn
 
 # Whether to check exports from entry point files
 includeEntryExports: false
@@ -373,6 +386,15 @@ Finds packages declared in `pubspec.yaml` that are **never imported** by any fil
 - Framework-implicit packages (e.g., `flutter`) are automatically excluded
 - Dev dependencies are not checked (test runners etc. cause false positives)
 
+### Unlisted Dependencies
+
+Finds packages that are **imported in code** but **not declared** in `pubspec.yaml`.
+
+- Severity: **error** (default)
+- Compares actual `package:` imports against `pubspec.yaml` declarations
+- Ignores the project's own package name
+- Respects `ignoreDependencies` configuration
+
 ### Unused Exports
 
 Finds publicly exported symbols (classes, functions, variables, typedefs, mixins, enums, extensions) that are **never imported** by other files.
@@ -383,6 +405,27 @@ Finds publicly exported symbols (classes, functions, variables, typedefs, mixins
 - **Conditional import support** — Symbols in platform-specific targets (e.g., `if (dart.library.html)`) are correctly recognized as used
 - Transitive re-exports via `export` directives are tracked
 - Entry point exports are excluded by default (configurable via `includeEntryExports`)
+
+### Unused Enum Members
+
+Finds enum constants that are **never referenced** in the project.
+
+- Severity: **warning** (default)
+- Tracks `EnumName.member` prefixed references across all files
+- If `EnumName.values` is referenced, all members are considered used
+- Handles part files correctly (collects enums from library and its parts)
+
+### Unused Class Members
+
+Finds public class/mixin members (methods, static fields, named constructors) that are **never referenced** in the project.
+
+- Severity: **warning** (default)
+- **Name-based heuristic** (no type resolution):
+  - Static members tracked via `ClassName.member` prefixed references
+  - Instance members tracked via name-based lookup across all files
+- Excludes `@override` methods and operators
+- Excludes private members (starting with `_`)
+- ⚠️ May produce false positives from name collisions across unrelated types
 
 ## Plugins
 
@@ -496,7 +539,10 @@ The benchmark measures each phase of the analysis pipeline independently:
 | `entry` | Entry point resolution (`EntryResolver.resolve()`) |
 | `fileDetect` | Unused file detection |
 | `depDetect` | Unused dependency detection |
+| `unlistedDetect` | Unlisted dependency detection |
 | `exportDetect` | Unused export detection |
+| `enumDetect` | Unused enum member detection |
+| `classDetect` | Unused class member detection |
 
 \* `parse` is measured in an isolated pass for profiling purposes. Since `GraphBuilder.build()` internally re-parses all files, `parse` is excluded from WALL TOTAL to avoid double-counting.
 
@@ -551,15 +597,16 @@ Returns a structured JSON object with per-phase statistics (`min_us`, `max_us`, 
 └──────────┘    └─────────────────────┘    │   graph)       │
                                            └───────┬───────┘
                                                    │
-                           ┌───────────────────────┼───────────────────────┐
-                           │                       │                       │
-                           ▼                       ▼                       ▼
-                  ┌─────────────────┐   ┌─────────────────┐   ┌─────────────────┐
-                  │  Unused File    │   │  Unused Dep     │   │  Unused Export  │
-                  │  Detector       │   │  Detector       │   │  Detector       │
-                  └────────┬────────┘   └────────┬────────┘   └────────┬────────┘
-                           │                     │                     │
-                           └──────────┬──────────┘─────────────────────┘
+                           ┌────────────┬────────────┬────────────┬────────────┬────────────┐
+                           │            │            │            │            │            │
+                           ▼            ▼            ▼            ▼            ▼            ▼
+                      ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐
+                      │ Unused  │ │ Unused  │ │Unlisted │ │ Unused  │ │ Unused  │ │ Unused  │
+                      │ File    │ │ Dep     │ │ Dep     │ │ Export  │ │ Enum    │ │ Class   │
+                      │Detector │ │Detector │ │Detector │ │Detector │ │ Member  │ │ Member  │
+                      └────┬────┘ └────┬────┘ └────┬────┘ └────┬────┘ └────┬────┘ └────┬────┘
+                           │           │           │           │           │           │
+                           └─────┬─────┘───────────┘───────────┘───────────┘───────────┘
                                       │
                                       ▼
                              ┌─────────────────┐
@@ -571,7 +618,7 @@ Returns a structured JSON object with per-phase statistics (`min_us`, `max_us`, 
 1. **Parse** — Each Dart file is parsed into an AST to extract imports, exports, parts, public symbols, and referenced identifiers
 2. **Build Graph** — A directed dependency graph is constructed from all import/export relationships
 3. **Resolve Entries** — Entry points are determined from configuration, plugins, and `main()` functions
-4. **Detect** — Three detectors run independently against the graph to find unused code
+4. **Detect** — Six detectors run independently against the graph to find unused code
 5. **Report** — Results are formatted and output with appropriate exit codes
 6. **Delete** (optional, via `shear delete`) — Detected issues are converted to delete actions and executed: file removal, pubspec.yaml editing, and AST-based symbol removal
 

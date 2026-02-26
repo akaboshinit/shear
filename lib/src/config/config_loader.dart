@@ -77,7 +77,10 @@ class ConfigLoader {
     final mapping = {
       'unusedFiles': IssueType.unusedFile,
       'unusedDependencies': IssueType.unusedDependency,
+      'unlistedDependencies': IssueType.unlistedDependency,
       'unusedExports': IssueType.unusedExport,
+      'unusedEnumMembers': IssueType.unusedEnumMember,
+      'unusedClassMembers': IssueType.unusedClassMember,
     };
 
     for (final entry in mapping.entries) {

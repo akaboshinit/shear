@@ -20,11 +20,16 @@ class PublicSymbol {
     required this.name,
     required this.kind,
     required this.filePath,
+    this.memberNames = const [],
   });
 
   final String name;
   final SymbolKind kind;
   final String filePath;
+
+  /// For enums: enum constant names (e.g. ['active', 'inactive']).
+  /// For classes/mixins: public non-override member names.
+  final List<String> memberNames;
 
   @override
   bool operator ==(Object other) =>

@@ -7,3 +7,6 @@
 ## Unused exports
   warn: UnusedWidget (lib/src/unused_widget.dart)
 
+## Unused class members
+  warn: AppRoute.routes (lib/src/app_route.dart)
+

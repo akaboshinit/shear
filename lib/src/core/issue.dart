@@ -4,7 +4,10 @@ import '../graph/module_graph.dart';
 enum IssueType {
   unusedFile('Unused files'),
   unusedDependency('Unused dependencies'),
-  unusedExport('Unused exports');
+  unlistedDependency('Unlisted dependencies'),
+  unusedExport('Unused exports'),
+  unusedEnumMember('Unused enum members'),
+  unusedClassMember('Unused class members');
 
   const IssueType(this.label);
 
